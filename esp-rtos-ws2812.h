@@ -15,6 +15,6 @@
 #include <FreeRTOS.h>
 #include <task.h>
 
-void esp_ws2812_send_pixels (uint8_t gpio_num, uint32_t *rgbs, size_t count);
+void  esp_ws2812_send_pixels (uint8_t gpio_num, uint32_t *rgbs, size_t count);
 
 #endif /* eps_rtos_ws2812_h */

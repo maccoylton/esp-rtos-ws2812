@@ -22,7 +22,7 @@
 #include <esp-rtos-ws2812.h>
 
 
-static inline IRAM uint32_t get_cycle_count() {
+static inline uint32_t get_cycle_count() {
     uint32_t cycles;
     asm volatile("rsr %0,ccount" : "=a" (cycles));
     return cycles;
@@ -107,23 +107,26 @@ void esp_ws2812_send_pixel(uint8_t gpio_num, uint32_t rgb)
     esp_ws2812_send_byte(gpio_num, (rgb & 0x0000FF) >> 0);
 }
 
-void IRAM esp_ws2812_send_pixels (uint8_t gpio_num, uint32_t *rgbs, size_t count)
+void esp_ws2812_send_pixels (uint8_t gpio_num, uint32_t *rgbs, size_t count)
 {
     
-//    uint32_t start, finish;
+    uint32_t start, finish;
     uint32_t rgb;
 
     taskENTER_CRITICAL();
     
-//    start = get_cycle_count();
+    start = get_cycle_count();
     for (size_t i = 0; i < count; i++) {
-        rgb = rgbs[i];
+        rgb = *rgbs++;
         esp_ws2812_send_pixel(gpio_num, rgb);
     }
-//    finish = get_cycle_count();
+    finish = get_cycle_count();
     
     taskEXIT_CRITICAL();
-//    sdk_os_delay_us(50); // display the loaded colors
+    sdk_os_delay_us(50); // display the loaded colors
     
-//    printf ("%s: cycles %d, micro second per pixel %f\n", __func__, finish-start, (finish-start)*12.5/1000/count);
+    //printf ("%s: cycles %d, micro second per pixel %f\n", __func__, finish-start, (finish-start)*12.5/1000/count);
 }
+
+
+
